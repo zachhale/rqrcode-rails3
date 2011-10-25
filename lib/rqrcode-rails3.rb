@@ -9,13 +9,20 @@ module RQRCode
   
   extend SizeCalculator
   
-  ActionController::Renderers.add :qrcode do |string, options|
+  ActionController::Renderers.add :qrcode do |data, options|
     format = self.request.format.symbol
+    
     options ||= {}
-    options = {:size => RQRCode.minimum_qr_size_from_string(string)}.merge options
     options[:svg] ||= {}
     
-    qrcode = RQRCode::QRCode.new(string, options)
+    if data.is_a? RQRCode::QRCode
+      qrcode = data
+    else
+      options = {:size => RQRCode.minimum_qr_size_from_string(data)}.merge options
+    
+      qrcode = RQRCode::QRCode.new(data, options)
+    end
+    
     svg    = RQRCode::Renderers::SVG::render(qrcode, options[:svg])
     
     data = \
