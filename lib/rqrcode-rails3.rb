@@ -18,7 +18,10 @@ module RQRCode
     if data.is_a? RQRCode::QRCode
       qrcode = data
     else
-      options = {:size => RQRCode.minimum_qr_size_from_string(data)}.merge options
+      options[:level] ||= :h
+      
+      optimal_size = RQRCode.minimum_qr_size_from_string(data, options[:level])
+      options = {:size => optimal_size}.merge options
     
       qrcode = RQRCode::QRCode.new(data, options)
     end
