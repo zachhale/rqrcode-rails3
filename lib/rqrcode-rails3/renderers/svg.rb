@@ -9,11 +9,12 @@ module RQRCode
         #   color  - Foreground color for the code (e.g. "000000" or :black)
 
         def render(qrcode, options={})
-          offset  = options[:offset].to_i || 0
-          color   = options[:color]       || "000"
+          offset    = options[:offset].to_i || 0
+          color     = options[:color]       || "000"
+          cell_size = options[:cell_size]   || 11
 
           # height and width dependent on offset and QR complexity
-          dimension = (qrcode.module_count*11) + (2*offset)
+          dimension = (qrcode.module_count*cell_size) + (2*offset)
 
           xml_tag   = %{<?xml version="1.0" standalone="yes"?>}
           open_tag  = %{<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events" width="#{dimension}" height="#{dimension}">}
@@ -27,7 +28,7 @@ module RQRCode
               x = r*11 + offset
 
               next unless qrcode.is_dark(c, r)
-              tmp << %{<rect width="11" height="11" x="#{x}" y="#{y}" style="fill:##{color}"/>}
+              tmp << %{<rect width="#{cell_size}" height="#{cell_size}" x="#{x}" y="#{y}" style="fill:##{color}"/>}
             end
             result << tmp.join
           end
