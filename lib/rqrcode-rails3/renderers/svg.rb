@@ -24,8 +24,8 @@ module RQRCode
           qrcode.modules.each_index do |c|
             tmp = []
             qrcode.modules.each_index do |r|
-              y = c*11 + offset
-              x = r*11 + offset
+              y = c*cell_size + offset
+              x = r*cell_size + offset
 
               next unless qrcode.is_dark(c, r)
               tmp << %{<rect width="#{cell_size}" height="#{cell_size}" x="#{x}" y="#{y}" style="fill:##{color}"/>}
