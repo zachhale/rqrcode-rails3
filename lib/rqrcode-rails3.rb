@@ -13,22 +13,20 @@ module RQRCode
     format = self.request.format.symbol
 
     options ||= {}
-    options[:svg] ||= {}
+    level = options.delete(:level)
+    size = options.delete(:size)
 
     if data.is_a? RQRCode::QRCode
       qrcode = data
     else
-      options[:level] ||= :h
-
-      optimal_size = RQRCode.minimum_qr_size_from_string(data, options[:level])
-      options = {:size => optimal_size}.merge options
-
-      qrcode = RQRCode::QRCode.new(data, options)
+      level ||= :h
+      size ||= RQRCode.minimum_qr_size_from_string(data, level)
+      qrcode = RQRCode::QRCode.new(data, :size => size, :level => level)
     end
 
-    svg = RQRCode::Renderers::SVG::render(qrcode, options[:svg])
+    svg = RQRCode::Renderers::SVG::render(qrcode, options)
 
-    data = \
+    response_data = \
     if format == :png
       image = MiniMagick::Image.read(svg) { |i| i.format "svg" }
       image.format "png"
@@ -37,6 +35,6 @@ module RQRCode
       svg
     end
 
-    self.response_body = render_to_string(:text => data, :template => nil)
+    self.response_body = render_to_string(:text => response_data, :template => nil)
   end
 end
