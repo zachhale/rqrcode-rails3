@@ -11,7 +11,7 @@ module RQRCode
 
         body = render_body
 
-        svg = [xml_tag, open_tag, body, close_tag].flatten.join("\n")
+        svg = [xml_tag, open_tag, body, close_tag].join("\n")
       end
 
       def render_body
