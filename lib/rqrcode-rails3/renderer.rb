@@ -35,8 +35,8 @@ module RQRCode
           qrcode = RQRCode::QRCode.new(data, :size => size, :level => level)
         end
 
-        renderer = renderers[format][:renderer]
-        renderer.render(qrcode, options)
+        renderer = renderers[format][:renderer].new(qrcode, options)
+        renderer.render
       end
     end
   end
