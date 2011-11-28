@@ -30,7 +30,7 @@ module RQRCode
           body.unshift %{<rect width="#{dimension}" height="#{dimension}" x="0" y="0" style="fill:##{fill}"/>}
         end
 
-        body
+        body.join("\n")
       end
 
       def render_cell(y_module, x_module)
