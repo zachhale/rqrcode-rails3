@@ -2,14 +2,15 @@ require 'action_controller'
 require 'rqrcode'
 require 'rqrcode-rails3/size_calculator'
 require 'rqrcode-rails3/renderer'
+require 'rqrcode-rails3/renderers/base'
 require 'rqrcode-rails3/renderers/svg'
 require 'rqrcode-rails3/renderers/png'
 
 module RQRCode
   extend SizeCalculator
 
-  RQRCode::Renderer.register :svg, "image/svg+xml"
-  RQRCode::Renderer.register :png, "image/png"
+  RQRCode::Renderer.register RQRCode::Renderers::SVG, :svg, "image/svg+xml"
+  RQRCode::Renderer.register RQRCode::Renderers::PNG, :png, "image/png"
 
   ActionController::Renderers.add :qrcode do |data, options|
     format = self.request.format.symbol

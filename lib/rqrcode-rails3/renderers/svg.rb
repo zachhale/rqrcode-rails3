@@ -1,6 +1,6 @@
 module RQRCode
   module Renderers
-    class SVG
+    class SVG < RQRCode::Renderers::Base
       class << self
         # Render the SVG from the qrcode string provided from the RQRCode gem
         #   Options:

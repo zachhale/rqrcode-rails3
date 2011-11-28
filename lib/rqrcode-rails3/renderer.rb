@@ -7,13 +7,18 @@ module RQRCode
         @@renderers
       end
 
-      def register(name, mime_type)
-        @@renderers[name] = mime_type
+      def register(module_name, name, mime_type)
+        @@renderers[name] = { :mime_type => mime_type,
+                              :renderer => module_name }
         Mime::Type.register mime_type, name
         @@renderers
       end
 
       def render(format, data, options)
+        unless renderers[format]
+          raise "RQRCode renderer #{format} not registered"
+        end
+
         options ||= {}
         level = options.delete(:level)
         size = options.delete(:size)
@@ -26,7 +31,7 @@ module RQRCode
           qrcode = RQRCode::QRCode.new(data, :size => size, :level => level)
         end
 
-        renderer = "RQRCode::Renderers::#{format.to_s.upcase}".constantize
+        renderer = renderers[format][:renderer]
         renderer.render(qrcode, options)
       end
     end
