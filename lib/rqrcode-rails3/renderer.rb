@@ -7,9 +7,13 @@ module RQRCode
         @@renderers
       end
 
-      def register(module_name, name, mime_type)
+      def register(renderer, name, mime_type)
+        unless renderer.ancestors.include?(RQRCode::Renderers::Base)
+          raise 'Renderer must be a type of RQRCode::Renderers::Base'
+        end
+
         @@renderers[name] = { :mime_type => mime_type,
-                              :renderer => module_name }
+                              :renderer => renderer }
         Mime::Type.register mime_type, name
         @@renderers
       end
