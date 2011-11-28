@@ -21,14 +21,11 @@ module RQRCode
           close_tag = "</svg>"
 
           result = []
-          qrcode.modules.each_index do |c|
+          qrcode.modules.each_index do |y_module|
             tmp = []
-            qrcode.modules.each_index do |r|
-              y = c*cell_size + offset
-              x = r*cell_size + offset
-
-              next unless qrcode.is_dark(c, r)
-              tmp << %{<rect width="#{cell_size}" height="#{cell_size}" x="#{x}" y="#{y}" style="fill:##{color}"/>}
+            qrcode.modules.each_index do |x_module|
+              cell = render_cell(qrcode, y_module, x_module, offset, color, cell_size)
+              tmp << cell if cell
             end
             result << tmp.join
           end
@@ -38,6 +35,15 @@ module RQRCode
           end
 
           svg = [xml_tag, open_tag, result, close_tag].flatten.join("\n")
+        end
+
+        def render_cell(qrcode, y_module, x_module, offset, color, cell_size)
+          y = y_module*cell_size + offset
+          x = x_module*cell_size + offset
+
+          if qrcode.is_dark(y_module, x_module)
+            %{<rect width="#{cell_size}" height="#{cell_size}" x="#{x}" y="#{y}" style="fill:##{color}"/>}
+          end
         end
       end
     end
